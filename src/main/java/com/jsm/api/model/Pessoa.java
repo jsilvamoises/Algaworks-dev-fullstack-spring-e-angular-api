@@ -1,74 +1,75 @@
 package com.jsm.api.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.persistence.Column;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
 @Entity
-@Table(name="categoria")
+@Table(name="pessoa")
+public class Pessoa implements Serializable {
 
-public class Categoria implements Serializable {
-	
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Long id;
 	
 	@NotBlank
-	@Size(min=5,max=60)
-	@Column(name="nome")
+	//@NotNull
 	private String nome;
+	private Boolean ativo;
 	
-	//@JsonIgnore
-	@ManyToOne
-	@JoinColumn(name="categoria_pai_id")
-	private Categoria categoriaPai;
-
-	public Categoria() {
+	@OneToMany(mappedBy="pessoa",orphanRemoval=true,cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+	List<Endereco> enderecos = new ArrayList<>();
+	
+	public Pessoa() {
 		super();
+		
 	}
-
-	public Categoria(Long id, String nome, Categoria categoriaPai) {
+	public Pessoa(Long id, String nome, Boolean ativo) {
 		super();
 		this.id = id;
 		this.nome = nome;
-		this.categoriaPai = categoriaPai;
+		this.ativo = ativo;
 	}
-
 	public Long getId() {
 		return id;
 	}
-
 	public void setId(Long id) {
 		this.id = id;
 	}
-
 	public String getNome() {
 		return nome;
 	}
-
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
-
-	public Categoria getCategoriaPai() {
-		return categoriaPai;
+	public Boolean getAtivo() {
+		return ativo;
 	}
-
-	public void setCategoriaPai(Categoria categoriaPai) {
-		this.categoriaPai = categoriaPai;
+	public void setAtivo(Boolean ativo) {
+		this.ativo = ativo;
 	}
-
+	
+	
+	
+	
+	public List<Endereco> getEnderecos() {
+		return enderecos;
+	}
+	public void setEnderecos(List<Endereco> enderecos) {
+		this.enderecos = enderecos;
+	}
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -76,7 +77,6 @@ public class Categoria implements Serializable {
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
-
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -85,7 +85,7 @@ public class Categoria implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Categoria other = (Categoria) obj;
+		Pessoa other = (Pessoa) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -93,21 +93,20 @@ public class Categoria implements Serializable {
 			return false;
 		return true;
 	}
-
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Categoria [id=");
+		builder.append("Pessoa [id=");
 		builder.append(id);
 		builder.append(", nome=");
 		builder.append(nome);
-		builder.append(", categoriaPai=");
-		builder.append(categoriaPai);
+		builder.append(", ativo=");
+		builder.append(ativo);
 		builder.append("]");
 		return builder.toString();
 	}
 	
 	
 	
-
+	
 }

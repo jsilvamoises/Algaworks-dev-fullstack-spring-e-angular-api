@@ -1,15 +1,15 @@
 package com.jsm.api.resource;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.net.URI;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,14 +17,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.jsm.api.event.RecursoCriadoEvent;
 import com.jsm.api.service.ServiceInterface;
 
 public abstract class ResourceInterfaceImpl<T, S extends ServiceInterface<T>> implements ResourceInterface<T> {
 
 	@Autowired
 	S service;
+	
+	@Autowired
+	private ApplicationEventPublisher publisher;
 
 	@GetMapping("/{id}")
 	@Override
@@ -79,30 +82,31 @@ public abstract class ResourceInterfaceImpl<T, S extends ServiceInterface<T>> im
 		return ResponseEntity.noContent().build();
 	}
 
-    @PutMapping
+    @PutMapping("/{id}")
 	@Override
-	public ResponseEntity<T> update(Long id, T object) {
+	public ResponseEntity<T> update(@PathVariable Long id,@Valid @RequestBody T object) {
 		object = service.update(id, object);
 		return ResponseEntity.ok(object);
 	}
 
     @PostMapping
 	@Override
-	public ResponseEntity<T> save(@Valid @RequestBody T object) {
+	public ResponseEntity<T> save(@Valid @RequestBody T object, HttpServletResponse response) {
 		object = service.save(object);
 		Long id = service.getId(object);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(id).toUri();
-
-		return ResponseEntity.created(uri).body(object);
+		//URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(id).toUri();
+        publisher.publishEvent(new RecursoCriadoEvent(this, response, id));
+		return ResponseEntity.status(HttpStatus.CREATED).body(object);
 	}
 
-	@PostMapping(params="array")
+	@PostMapping("/array")
 	@Override
-	public ResponseEntity<List<T>> saveAll(@Valid @RequestBody List<T> objects) {
+	public ResponseEntity<List<T>> saveAll(@Valid @RequestBody List<T> objects,HttpServletResponse response) {
 		objects = service.saveAll(objects);
 		Long id = service.getId(objects.get(0));
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(id).toUri();
-		return ResponseEntity.created(uri).body(objects);
+		//URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(id).toUri();
+		publisher.publishEvent(new RecursoCriadoEvent(this, response, id));
+		return ResponseEntity.status(HttpStatus.CREATED).body(objects);
 	}
 
 	

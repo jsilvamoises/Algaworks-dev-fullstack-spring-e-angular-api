@@ -2,6 +2,8 @@ package com.jsm.api.resource;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +26,7 @@ public interface ResourceInterface<T> {
 
 	ResponseEntity<T> update(Long id, T object);
 
-	ResponseEntity<T> save(T object);
+	ResponseEntity<T> save(T object,HttpServletResponse response);
 
-	ResponseEntity<List<T>> saveAll(List<T> objects);
+	ResponseEntity<List<T>> saveAll(List<T> objects,HttpServletResponse response);
 }

@@ -66,7 +66,7 @@ public abstract class ServiceInterfaceImpl<T, J extends JpaRepository<T, Long>> 
 	public T update(Long id, T object) {
 		T saved = findById(id);
 		BeanUtils.copyProperties(object, saved, "id");
-
+        saved =  repository.save(saved);
 		return saved;
 	}
 
