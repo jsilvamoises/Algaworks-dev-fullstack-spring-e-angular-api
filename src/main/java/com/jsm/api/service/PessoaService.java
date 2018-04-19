@@ -8,6 +8,7 @@ import com.jsm.api.repository.PessoaRepository;
 @Service
 public class PessoaService extends ServiceInterfaceImpl<Pessoa, PessoaRepository>{
 
+	
 	@Override
 	public Pessoa save(Pessoa object) {	
 		object.getEnderecos().forEach(e->{
@@ -16,5 +17,11 @@ public class PessoaService extends ServiceInterfaceImpl<Pessoa, PessoaRepository
 		return super.save(object);
 	}
 
+	public Pessoa updateStatus(Long id) {
+		Pessoa pessoa = findById(id);
+		pessoa.setAtivo(pessoa.getAtivo()?false:true);
+		pessoa = save(pessoa);
+		return pessoa;
+	}
 	
 }

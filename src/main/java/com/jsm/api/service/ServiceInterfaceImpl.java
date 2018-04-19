@@ -106,5 +106,9 @@ public abstract class ServiceInterfaceImpl<T, J extends JpaRepository<T, Long>> 
 
 		return id;
 	}
+	
+	public J getRepository() {
+		return repository;
+	}
 
 }
