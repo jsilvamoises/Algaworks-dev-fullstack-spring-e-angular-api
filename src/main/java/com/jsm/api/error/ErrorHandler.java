@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -29,6 +31,20 @@ public class ErrorHandler {
 		
 		DefaultError erro = new DefaultError().setError(getMessage("msg.error.nao_encontrado"))
 				.setMessage(ex.getMessage()).setPath(request.getRequestURI())
+				.setStatus(HttpStatus.UNPROCESSABLE_ENTITY.value()).setTimestamp(System.currentTimeMillis());
+		
+		List<DefaultError> erros = new ArrayList<>();
+		erros.add(erro);
+		return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(erros);
+
+	}
+	
+	@ExceptionHandler(value = { ConstraintViolationException.class })
+	public ResponseEntity<List<DefaultError>> constraintViolationExceptionHandler(ConstraintViolationException ex,
+			HttpServletRequest request) {
+		
+		DefaultError erro = new DefaultError().setError(getMessage("msg.error.nao_permitido"))
+				.setMessage(ExceptionUtils.getRootCauseMessage(ex)).setPath(request.getRequestURI())
 				.setStatus(HttpStatus.UNPROCESSABLE_ENTITY.value()).setTimestamp(System.currentTimeMillis());
 		
 		List<DefaultError> erros = new ArrayList<>();

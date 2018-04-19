@@ -2,6 +2,7 @@ package com.jsm.api.service;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,16 +18,27 @@ public abstract class ServiceInterfaceImpl<T, J extends JpaRepository<T, Long>> 
 
 	@Autowired
 	private J repository;
+	
+	
+	
 
 	@Override
 	public T findById(Long id) {
 		Optional<T> object = repository.findById(id);
+		
 		if (!object.isPresent()) {
-			throw new ObjectNotFoundException("Objeto não encontrado!!! :(");
+			throw new ObjectNotFoundException("Objeto não encontrado!!! :( ["+getGenericName()+" ID: "+id+"]");
 		}
 
 		return object.get();
 	}
+	
+	@SuppressWarnings("unchecked")
+	protected String getGenericName()
+    {
+        return ((Class<T>) ((ParameterizedType) getClass()
+                .getGenericSuperclass()).getActualTypeArguments()[0]).getTypeName();
+    }
 
 	@Override
 	public List<T> findAll() {
