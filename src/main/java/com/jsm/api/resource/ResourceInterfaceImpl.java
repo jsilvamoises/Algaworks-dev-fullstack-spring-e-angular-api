@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.jsm.api.event.RecursoCriadoEvent;
 import com.jsm.api.service.ServiceInterface;
 
+//	@CrossOrigin(maxAge = 10,origins= {"*"})
 public abstract class ResourceInterfaceImpl<T, S extends ServiceInterface<T>> implements ResourceInterface<T> {
 
 	@Autowired

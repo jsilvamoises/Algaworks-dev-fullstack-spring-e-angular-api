@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -75,9 +76,11 @@ public abstract class ServiceInterfaceImpl<T, J extends JpaRepository<T, Long>> 
 	}
 
 	@Override
-	public T update(Long id, T object) {
+	public T update(Long id, T object) throws BeansException  {
 		T saved = findById(id);
+		//BeanUtils.copyProperties(object, saved, "id");
 		BeanUtils.copyProperties(object, saved, "id");
+		
         saved =  repository.save(saved);
 		return saved;
 	}

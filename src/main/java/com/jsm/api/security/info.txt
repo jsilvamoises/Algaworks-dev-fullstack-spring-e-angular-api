@@ -1,0 +1,22 @@
+# CONFIGURANDO A REQUISIÇÃO PARA OBTER O TOKEN
+1º Digite a URL localhost:8080/oauth/token 
+2º Configurar autenticação basica com as credencias do cliente,
+neste caso cliente=angular e secret=angular (pode vir de bando de dados)
+3º em body defina x.www-form-urlencoded e adicione os dados a seguir
+client=angular
+username=admin
+password=1982
+grant_type=passord
+4º faça a requisição o retorno deve ser o access token.
+
+# FAZENDO REQUISIÇÃO UTILIZANDO O TOKEN
+1º Digite no Postman um url que precisa de autenticação
+Ex: http://localhost:8080/lancamentos/filtrar?descricao=parcela&dataVencimentoDe=2018-09-01&dataVencimentoAte=2019-09-01&page=1&size=3
+2º Difina a autenticação como Oaut2
+3º No Header Authorization em value defina da seguinte forma
+Bearer e o token que foi retornado da primeiro requisição.
+Ex: Bearer c8ddca55-044d-435b-a38b-d8984cbd91b8
+
+### Site JWT - https://jwt.io/
+
+# requisitando refresh token

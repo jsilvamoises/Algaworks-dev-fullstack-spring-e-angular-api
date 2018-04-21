@@ -20,6 +20,7 @@ import com.jsm.api.filter.LancamentoFilter;
 import com.jsm.api.model.Lancamento;
 import com.jsm.api.model.Lancamento_;
 
+
 public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery {
 
 	@PersistenceContext
